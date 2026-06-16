@@ -1,35 +1,10 @@
 def decide(portfolio, prices):
 
     qqq_val = portfolio["qqq_shares"] * prices["qqq"]
-    total = qqq_val + portfolio["bnd_shares"] * prices["bnd"] + portfolio["cash"]
-
-    qqq_ratio = qqq_val / total
-
-    action = []
-    invest = 100
-
-    # 🔥 加强版策略
-    if prices["qqq_dd"] < -20:
-        invest = 200
-        action.append("深度回撤 → 加倍DCA")
-
-    if qqq_ratio > 0.7:
-        action.append("风险过高 → 建议买债券")
-
-    if prices["qqq"] > 500:
-        action.append("估值偏高 → 控制仓位")
-
-    return {
-        "invest": invest,
-        "action": action,
-        "qqq_ratio": round(qqq_ratio * 100, 2)
-    }def decide(portfolio, prices):
-
-    qqq_val = portfolio["qqq_shares"] * prices["qqq"]
     bnd_val = portfolio["bnd_shares"] * prices["bnd"]
     total = qqq_val + bnd_val + portfolio["cash"]
 
-    qqq_ratio = qqq_val / total
+    qqq_ratio = qqq_val / total if total > 0 else 0
 
     invest = 100
     actions = []
@@ -47,6 +22,7 @@ def decide(portfolio, prices):
     if prices["qqq"] > 500:
         actions.append("📈 市场估值偏高：建议控制风险敞口")
 
+    # 🟢 默认情况
     if not actions:
         actions.append("✅ 市场正常：继续每日定投")
 
